@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './Map.module.css';
 import {
   MapContainer,
@@ -14,9 +14,10 @@ import type { CityInterface } from '../interface';
 import { useEffect } from 'react';
 import useGeolocation from '../hooks/useGeoLocation';
 import Button from './Button';
+import useUrlPositions from '../hooks/useUrlPositions';
+import Emoji from '../Emoji';
 
 function Map() {
-  const [searchParams] = useSearchParams();
   const { cities } = useCities();
   const {
     isLoading,
@@ -24,8 +25,7 @@ function Map() {
     getGeolocation,
   } = useGeolocation();
 
-  const mapLat = Number(searchParams.get('lat'));
-  const mapLng = Number(searchParams.get('lng'));
+  const [mapLat, mapLng] = useUrlPositions();
   const [mapPosition, setMapPosition] = useState<number[]>([40, 0]);
 
   const isGeoPositionEqual = () =>
@@ -74,7 +74,10 @@ function Map() {
             key={city.id}
           >
             <Popup>
-              <span>{city.emoji}</span> <span>{city.cityName}</span>
+              <span>
+                <Emoji flagEmoji={city.emoji} />
+              </span>{' '}
+              <span>{city.cityName}</span>
             </Popup>
           </Marker>
         ))}
